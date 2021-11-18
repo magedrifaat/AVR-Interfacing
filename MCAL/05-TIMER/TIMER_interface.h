@@ -35,8 +35,13 @@ Timer_Time_t;
 #define TIMER_u8_NORMAL                           1
 #define TIMER_u8_CTC                              2
 #define TIMER_u8_PWM_FAST                         3
-#define TIMER_u8_PWM_PHASECORRECT                 4
-#define TIMER_u8_PWM_PHASEANDFREQUENCYCORRECT     5
+#define TIMER_u8_PWM_PC                           4
+#define TIMER_u8_PWM_PFC                          5
+
+#define TIMER_u8_COM_DISABLE                      0
+#define TIMER_u8_COM_TOGGLE                       1
+#define TIMER_u8_COM_CLEAR                        2
+#define TIMER_u8_COM_SET                          3
 
 #define TIMER_u8_PRESCALAR_1                      0
 #define TIMER_u8_PRESCALAR_8                      1
@@ -57,6 +62,8 @@ void Timer_voidPostInit(u8 Copy_u8Timer, Timer_Config_t * Copy_Config);
 void Timer_voidSetCount(u8 Copy_u8Timer, u16 Copy_u16Value);
 void Timer_voidSetCompare(u8 Copy_u8Timer, u16 Copy_u16Value);
 
+void Timer_voidSetCompareOutputMode(u8 Copy_u8Timer, u8 Copy_u8Mode);
+
 void Timer_voidEnableOVFInterrupt(u8 Copy_u8Timer);
 void Timer_voidDisableOVFInterrupt(u8 Copy_u8Timer);
 void Timer_voidClearOVFFlag(u8 Copy_u8Timer);
@@ -69,5 +76,8 @@ void Timer_voidSetCallback(u8 Copy_u8Timer, u8 Copy_u8Mode, void (* Copy_pvoidCa
 
 void Timer_voidCallEvery(u8 Copy_u8Timer, Timer_Time_t * time, void (* Copy_pvoidCallBack) (void));
 void Timer_voidStopActiveCall(u8 Copy_u8Timer);
+
+void Timer_voidTimer1PWM(u8 Copy_u8Mode, u32 Copy_u32Frequency, u8 Copy_u8COMA, f32 Copy_f32DutyA, u8 Copy_u8COMB, f32 Copy_f32DutyB);
+void Timer_voidSetTimer1PWMDuty(f32 Copy_f32DutyA, f32 Copy_f32DutyB);
 
 #endif /* MCAL_05_TIMER_TIMER_INTERFACE_H_ */

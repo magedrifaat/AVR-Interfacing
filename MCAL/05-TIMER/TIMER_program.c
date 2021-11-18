@@ -12,6 +12,8 @@
 #include "TIMER_config.h"
 #include "TIMER_private.h"
 
+#include "../01-DIO/DIO_interface.h"
+
 void Timer_voidInit() {
 	Timer_Config_t LOC_ConfigTimer0 = { .u8Mode = TIMER_u8_TIMER0_MODE,
 			.u8Prescalar = TIMER_u8_TIMER0_PRESCALAR, .u8OVFInterruptState =
@@ -51,6 +53,16 @@ void Timer_voidPostInit(u8 Copy_u8Timer, Timer_Config_t *Copy_Config) {
 			SET_BIT(TCCR0, WGM01);
 			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
 			break;
+		case TIMER_u8_PWM_FAST:
+			SET_BIT(TCCR0, WGM00);
+			SET_BIT(TCCR0, WGM01);
+			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
+			break;
+		case TIMER_u8_PWM_PC:
+			SET_BIT(TCCR0, WGM00);
+			CLR_BIT(TCCR0, WGM01);
+			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
+			break;
 		}
 		if (Copy_Config->u8OVFInterruptState == TIMER_u8_INTERRUPT_ENABLED) {
 			Timer_voidEnableOVFInterrupt(Copy_u8Timer);
@@ -84,6 +96,27 @@ void Timer_voidPostInit(u8 Copy_u8Timer, Timer_Config_t *Copy_Config) {
 			CLR_BIT(TCCR1B, WGM13);
 			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
 			break;
+		case TIMER_u8_PWM_FAST:
+			SET_BIT(TCCR1A, WGM10);
+			SET_BIT(TCCR1A, WGM11);
+			SET_BIT(TCCR1B, WGM12);
+			CLR_BIT(TCCR1B, WGM13);
+			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
+			break;
+		case TIMER_u8_PWM_PC:
+			SET_BIT(TCCR1A, WGM10);
+			SET_BIT(TCCR1A, WGM11);
+			CLR_BIT(TCCR1B, WGM12);
+			CLR_BIT(TCCR1B, WGM13);
+			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
+			break;
+		case TIMER_u8_PWM_PFC:
+			SET_BIT(TCCR1A, WGM10);
+			CLR_BIT(TCCR1A, WGM11);
+			CLR_BIT(TCCR1B, WGM12);
+			SET_BIT(TCCR1B, WGM13);
+			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
+			break;
 		}
 		if (Copy_Config->u8OVFInterruptState == TIMER_u8_INTERRUPT_ENABLED) {
 			Timer_voidEnableOVFInterrupt(Copy_u8Timer);
@@ -111,6 +144,16 @@ void Timer_voidPostInit(u8 Copy_u8Timer, Timer_Config_t *Copy_Config) {
 		case TIMER_u8_CTC:
 			CLR_BIT(TCCR2, WGM20);
 			SET_BIT(TCCR2, WGM21);
+			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
+			break;
+		case TIMER_u8_PWM_FAST:
+			SET_BIT(TCCR2, WGM20);
+			SET_BIT(TCCR2, WGM21);
+			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
+			break;
+		case TIMER_u8_PWM_PC:
+			SET_BIT(TCCR2, WGM20);
+			CLR_BIT(TCCR2, WGM21);
 			Timer_voidSetPrescalar(Copy_u8Timer, Copy_Config->u8Prescalar);
 			break;
 		}
@@ -243,6 +286,71 @@ void Timer_voidSetCompare(u8 Copy_u8Timer, u16 Copy_u16Value) {
 		break;
 	case TIMER_u8_TIMER2:
 		OCR2 = (u8) Copy_u16Value;
+		break;
+	}
+}
+
+void Timer_voidSetCompareOutputMode(u8 Copy_u8Timer, u8 Copy_u8Mode) {
+	switch (Copy_u8Timer) {
+	case TIMER_u8_TIMER0:
+		switch (Copy_u8Mode) {
+		case TIMER_u8_COM_DISABLE:
+			CLR_BIT(TCCR0, COM00);
+			CLR_BIT(TCCR0, COM01);
+			break;
+		case TIMER_u8_COM_TOGGLE:
+			SET_BIT(TCCR0, COM00);
+			CLR_BIT(TCCR0, COM01);
+			break;
+		case TIMER_u8_COM_CLEAR:
+			CLR_BIT(TCCR0, COM00);
+			SET_BIT(TCCR0, COM01);
+			break;
+		case TIMER_u8_COM_SET:
+			SET_BIT(TCCR0, COM00);
+			SET_BIT(TCCR0, COM01);
+			break;
+		}
+		break;
+	case TIMER_u8_TIMER1:
+		switch (Copy_u8Mode) {
+		case TIMER_u8_COM_DISABLE:
+			CLR_BIT(TCCR1A, COM1A0);
+			CLR_BIT(TCCR1A, COM1A1);
+			break;
+		case TIMER_u8_COM_TOGGLE:
+			SET_BIT(TCCR1A, COM1A0);
+			CLR_BIT(TCCR1A, COM1A1);
+			break;
+		case TIMER_u8_COM_CLEAR:
+			CLR_BIT(TCCR1A, COM1A0);
+			SET_BIT(TCCR1A, COM1A1);
+			break;
+		case TIMER_u8_COM_SET:
+			SET_BIT(TCCR1A, COM1A0);
+			SET_BIT(TCCR1A, COM1A1);
+			break;
+		}
+		break;
+	case TIMER_u8_TIMER2:
+		switch (Copy_u8Mode) {
+		case TIMER_u8_COM_DISABLE:
+			CLR_BIT(TCCR2, COM20);
+			CLR_BIT(TCCR2, COM21);
+			break;
+		case TIMER_u8_COM_TOGGLE:
+			SET_BIT(TCCR2, COM20);
+			CLR_BIT(TCCR2, COM21);
+			break;
+		case TIMER_u8_COM_CLEAR:
+			CLR_BIT(TCCR2, COM20);
+			SET_BIT(TCCR2, COM21);
+			break;
+		case TIMER_u8_COM_SET:
+			SET_BIT(TCCR2, COM20);
+			SET_BIT(TCCR2, COM21);
+			break;
+		}
 		break;
 	}
 }
@@ -537,6 +645,141 @@ void Timer_voidTimer2Wrapper(void) {
 		}
 		Timer_u32SWIterator[2] = 0;
 		TCNT2 = Timer_u16CountStart[2];
+	}
+}
+
+void Timer_voidTimer1PWM(u8 Copy_u8Mode, u32 Copy_u32Frequency, u8 Copy_u8COMA,
+		f32 Copy_f32DutyA, u8 Copy_u8COMB, f32 Copy_f32DutyB) {
+
+	if (Copy_u8COMA == TIMER_u8_COM_DISABLE && Copy_u8COMB == TIMER_u8_COM_DISABLE) {
+		return;
+	}
+
+	Timer_Config_t Loc_config;
+	Loc_config.u8Mode = TIMER_u8_NORMAL;
+	Loc_config.u8OCInterruptState = TIMER_u8_INTERRUPT_DISABLED;
+	Loc_config.u8OVFInterruptState = TIMER_u8_INTERRUPT_DISABLED;
+	Loc_config.u8Prescalar = TIMER_u8_PRESCALAR_1;
+
+	Timer_voidPostInit(TIMER_u8_TIMER1, &Loc_config);
+	Timer_voidClearOVFFlag(TIMER_u8_TIMER1);
+	Timer_voidClearCTCFlag(TIMER_u8_TIMER1);
+
+	CLR_BIT(TCCR1A, COM1A0);
+	CLR_BIT(TCCR1A, COM1A1);
+	CLR_BIT(TCCR1A, COM1B0);
+	CLR_BIT(TCCR1A, COM1B1);
+
+	u8 Loc_u8Divisor;
+
+	switch (Copy_u8Mode) {
+	case TIMER_u8_PWM_FAST:
+		CLR_BIT(TCCR1A, WGM10);
+		SET_BIT(TCCR1A, WGM11);
+		SET_BIT(TCCR1B, WGM12);
+		SET_BIT(TCCR1B, WGM13);
+		Loc_u8Divisor = 1;
+		break;
+	case TIMER_u8_PWM_PC:
+		CLR_BIT(TCCR1A, WGM10);
+		SET_BIT(TCCR1A, WGM11);
+		CLR_BIT(TCCR1B, WGM12);
+		SET_BIT(TCCR1B, WGM13);
+		Loc_u8Divisor = 2;
+		break;
+	case TIMER_u8_PWM_PFC:
+		CLR_BIT(TCCR1A, WGM10);
+		CLR_BIT(TCCR1A, WGM11);
+		CLR_BIT(TCCR1B, WGM12);
+		SET_BIT(TCCR1B, WGM13);
+		Loc_u8Divisor = 2;
+		break;
+	default:
+		return;
+	}
+
+	u16 Loc_u16PrescalarValue;
+	if (Copy_u32Frequency > F_CPU / Loc_u8Divisor / 2) {
+		return;
+	} else if (Copy_u32Frequency >= (F_CPU / 0xF424) / Loc_u8Divisor) {
+		Loc_config.u8Prescalar = TIMER_u8_PRESCALAR_1;
+		Loc_u16PrescalarValue = 1;
+	} else if (Copy_u32Frequency >= (F_CPU / 8 / 0xF424) / Loc_u8Divisor) {
+		Loc_config.u8Prescalar = TIMER_u8_PRESCALAR_8;
+		Loc_u16PrescalarValue = 8;
+	} else if (Copy_u32Frequency >= (F_CPU / 64 / 0xF424) / Loc_u8Divisor) {
+		Loc_config.u8Prescalar = TIMER_u8_PRESCALAR_64;
+		Loc_u16PrescalarValue = 64;
+	} else {
+		Loc_config.u8Prescalar = TIMER_u8_PRESCALAR_256;
+		Loc_u16PrescalarValue = 256;
+	}
+
+	Timer_voidSetPrescalar(TIMER_u8_TIMER1, Loc_config.u8Prescalar);
+	u16 Loc_u16TopVal;
+	if (Copy_u8Mode == TIMER_u8_PWM_FAST) {
+		Loc_u16TopVal = (f32) F_CPU / Copy_u32Frequency / Loc_u16PrescalarValue - 0.5;
+	} else {
+		Loc_u16TopVal = (f32) F_CPU / Copy_u32Frequency / Loc_u16PrescalarValue / 2 + 0.5;
+	}
+
+	ICR1H = Loc_u16TopVal >> 8;
+	ICR1L = Loc_u16TopVal & 0xFF;
+
+	switch (Copy_u8COMA) {
+	case TIMER_u8_COM_DISABLE:
+		CLR_BIT(TCCR1A, COM1A0);
+		CLR_BIT(TCCR1A, COM1A1);
+		break;
+	case TIMER_u8_COM_CLEAR:
+		OCR1AH = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyA - 0.5) >> 8;
+		OCR1AL = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyA - 0.5) & 0xFF;
+		CLR_BIT(TCCR1A, COM1A0);
+		SET_BIT(TCCR1A, COM1A1);
+		DIO_voidSetPinDirection(DIO_u8_PIN_D5, DIO_u8_OUTPUT);
+		break;
+	case TIMER_u8_COM_SET:
+		OCR1AH = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyA - 0.5) >> 8;
+		OCR1AL = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyA - 0.5) & 0xFF;
+		SET_BIT(TCCR1A, COM1A0);
+		SET_BIT(TCCR1A, COM1A1);
+		DIO_voidSetPinDirection(DIO_u8_PIN_D5, DIO_u8_OUTPUT);
+		break;
+	}
+
+	switch (Copy_u8COMB) {
+	case TIMER_u8_COM_DISABLE:
+		CLR_BIT(TCCR1A, COM1B0);
+		CLR_BIT(TCCR1A, COM1B1);
+		break;
+	case TIMER_u8_COM_CLEAR:
+		OCR1BH = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyB - 0.5) >> 8;
+		OCR1BL = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyB - 0.5) & 0xFF;
+		CLR_BIT(TCCR1A, COM1B0);
+		SET_BIT(TCCR1A, COM1B1);
+		DIO_voidSetPinDirection(DIO_u8_PIN_D4, DIO_u8_OUTPUT);
+		break;
+	case TIMER_u8_COM_SET:
+		OCR1BH = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyB - 0.5) >> 8;
+		OCR1BL = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyB - 0.5) & 0xFF;
+		SET_BIT(TCCR1A, COM1B0);
+		SET_BIT(TCCR1A, COM1B1);
+		DIO_voidSetPinDirection(DIO_u8_PIN_D4, DIO_u8_OUTPUT);
+		break;
+	}
+
+}
+
+void Timer_voidSetTimer1PWMDuty(f32 Copy_f32DutyA, f32 Copy_f32DutyB) {
+	u16 Loc_u16TopVal = ICR1L + (ICR1H << 8);
+	if (GET_BIT(TCCR1A, COM1A1)) {
+		OCR1AH = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyA - 0.5) >> 8;
+		OCR1AL = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyA - 0.5) & 0xFF;
+	}
+
+	if (GET_BIT(TCCR1A, COM1B1)) {
+		OCR1BH = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyB - 0.5) >> 8;
+		OCR1BL = (u16) ((Loc_u16TopVal + 1) * Copy_f32DutyB - 0.5) & 0xFF;
 	}
 }
 

@@ -16,9 +16,18 @@
  * 	- TIMER_u8_NORMAL
  * 	- TIMER_u8_CTC
  * 	- TIMER_u8_PWM_FAST
- * 	- TIMER_u8_PWM_PHASECORRECT
+ * 	- TIMER_u8_PWM_PC
  */
 #define TIMER_u8_TIMER0_MODE  TIMER_u8_STOP
+
+/* Compare Output Mode for Timer 0
+ * Options:
+ * 	- TIMER_u8_COM_DISABLE
+ * 	- TIMER_u8_COM_TOGGLE
+ * 	- TIMER_u8_COM_CLEAR
+ * 	- TIMER_u8_COM_SET
+ */
+#define TIMER_u8_TIMER0_COM    TIMER_u8_COM_DISABLE
 
 /*
  * Prescalar for Timer 0
@@ -51,10 +60,19 @@
  * 	- TIMER_u8_NORMAL
  * 	- TIMER_u8_CTC
  * 	- TIMER_u8_PWM_FAST
- * 	- TIMER_u8_PWM_PHASECORRECT
- * 	- TIMER_u8_PWM_PHASEANDFREQUENCYCORRECT
+ * 	- TIMER_u8_PWM_PC
+ * 	- TIMER_u8_PWM_PFC
  */
 #define TIMER_u8_TIMER1_MODE  TIMER_u8_STOP
+
+/* Compare Output Mode for Timer 1
+ * Options:
+ * 	- TIMER_u8_COM_DISABLE
+ * 	- TIMER_u8_COM_TOGGLE
+ * 	- TIMER_u8_COM_CLEAR
+ * 	- TIMER_u8_COM_SET
+ */
+#define TIMER_u8_TIMER1_COM    TIMER_u8_COM_DISABLE
 
 /*
  * Prescalar for Timer 1
@@ -87,9 +105,18 @@
  * 	- TIMER_u8_NORMAL
  * 	- TIMER_u8_CTC
  * 	- TIMER_u8_PWM_FAST
- * 	- TIMER_u8_PWM_PHASECORRECT
+ * 	- TIMER_u8_PWM_PC
  */
 #define TIMER_u8_TIMER2_MODE  TIMER_u8_STOP
+
+/* Compare Output Mode for Timer 2
+ * Options:
+ * 	- TIMER_u8_COM_DISABLE
+ * 	- TIMER_u8_COM_TOGGLE
+ * 	- TIMER_u8_COM_CLEAR
+ * 	- TIMER_u8_COM_SET
+ */
+#define TIMER_u8_TIMER2_COM    TIMER_u8_COM_DISABLE
 
 /*
  * Prescalar for Timer 2
