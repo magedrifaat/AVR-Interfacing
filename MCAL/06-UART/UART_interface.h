@@ -15,6 +15,9 @@
 #define UART_u8_UNBUFFERED          0
 #define UART_u8_BUFFERED            1
 
+#define UART_s16_NO_DATA            -1
+#define UART_s16_ERROR              -2
+
 void UART_voidInit();
 
 void UART_voidWrite(u16 Copy_u16Data);
@@ -30,7 +33,7 @@ void UART_voidDisableReceiver();
 
 void UART_voidEnableTCInterrupt();
 void UART_voidDisableTCInterrupt();
-void UART_voidSetTCCallback(u16 (* Copy_pu16Callback) (void));
+void UART_voidSetTCCallback(s16 (* Copy_ps16Callback) (void));
 
 void UART_voidEnableRCInterrupt();
 void UART_voidDisableRCInterrupt();

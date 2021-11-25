@@ -46,4 +46,33 @@
 
 void UART_voidSetBaudrate(u32 Copy_u32Baudrate);
 
+#if UART_u8_BUFFER_MODE == UART_u8_BUFFERED
+#define UART_u8_TX_BUFFER_SIZE    64
+#define UART_u8_RX_BUFFER_SIZE    64
+
+volatile u8 UART_u8TXBuff[UART_u8_TX_BUFFER_SIZE];
+volatile u8 UART_u8TXStart = 0;
+volatile u8 UART_u8TXEnd = 0;
+
+volatile u8 UART_u8RXBuff[UART_u8_RX_BUFFER_SIZE];
+volatile u8 UART_u8RXStart = 0;
+volatile u8 UART_u8RXEnd = 0;
+
+s16 UART_s16TXHandler(void);
+void UART_voidRXHandler(u16 data);
+#endif
+
+#define NULL 0
+s16 (* UART_ps16TCCallback) (void) = NULL;
+void (* UART_pvoidRCCallback) (u16) = NULL;
+
+#define UART_UDRE_vec   14
+#define UART_RXC_vec    13
+
+#define CONCAT(A, B) A ## B
+#define ISR(VEC_NUM) void CONCAT(__vector_, VEC_NUM)(void)
+ISR(UART_UDRE_vec) __attribute__ ((signal));
+ISR(UART_RXC_vec) __attribute__ ((signal));
+
+
 #endif /* MCAL_06_UART_UART_PRIVATE_H_ */

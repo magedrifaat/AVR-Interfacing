@@ -9,18 +9,17 @@
 #include "../Services/BIT_MATH.h"
 
 #include "../MCAL/06-UART/UART_interface.h"
-#include "../HAL/01-CLCD/CLCD_interface.h"
-
 #include <util/delay.h>
 
 
 int main(void) {
 	UART_voidInit();
-	CLCD_voidInit();
 
 	while (1) {
 		if (UART_u8IsAvailable()) {
 			UART_voidWrite(UART_s16Read());
 		}
+
+		_delay_ms(100);
 	}
 }
